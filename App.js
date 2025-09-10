@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TextInput, Button, SafeAreaView, FlatList } fro
 import { useState } from 'react';
 
 export default function App() {
-  const [text, onChangeText] = useState(
+  const [text, onNameInput] = useState(
      'Add text to add something to your list!'
   )
   const [cats, setCat] = useState([
@@ -11,11 +11,12 @@ export default function App() {
   ])
 
   const addToList = () => {
-    setCat({name: text}, ...cats)
+    console.log(text)
+    setCat([{name: text}, ...cats])
   }
 
   const debug = () => {
-    console.log(cats[1].name)
+    console.log(cats[0].name)
   }
 
   return (
@@ -25,9 +26,17 @@ export default function App() {
 
       <TextInput
         style={styles.input}
-        onChangeText={onChangeText}
+        onChangeText={onNameInput}
         placeholder = "enter cat name!! :D"
       />
+      <View style={styles.kitties}>
+        <FlatList
+          data={cats}
+          renderItem={(itemData) => {
+              return <Text> {itemData.item.name} </Text>
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 }
@@ -38,5 +47,11 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+  },
+  kitties: {
+    height: 40,
+    margin: 12,
+    padding: 10,
+    borderWidth: 3,
   },
 });
