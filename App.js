@@ -3,37 +3,54 @@ import { StyleSheet, Text, View, TextInput, Button, SafeAreaView, FlatList } fro
 import { useState } from 'react';
 
 export default function App() {
-  const [text, onNameInput] = useState(
-     'Add text to add something to your list!'
-  )
-  const [cats, setCat] = useState([
-    {name: 'panko'},
+  const [nameText, onNameInput] = useState()
+  const [raceText, onRaceInput] = useState()
+
+  const [animals, setAnimal] = useState([
+    {name: 'Panko', species: 'feline'},
+    {name: 'Haru Urara', species: 'horse'}
   ])
 
   const addToList = () => {
-    console.log(text)
-    setCat([{name: text}, ...cats])
+    console.log(nameText, raceText)
+    if(nameText == undefined && raceText == undefined){
+      setAnimal([{name: 'Uni', species: 'Feline'}, ...animals])
+    } else if(nameText == undefined && raceText != undefined) {
+      setAnimal([{name: 'Uni', species: 'Feline'}, ...animals])
+    } else if(raceText == undefined && nameText != undefined) {
+      setAnimal([{name: 'Uni', species: 'Feline'}, ...animals])
+    } else if(nameText === null && raceText === null){
+      setAnimal([{name: 'Uni', species: 'Feline'}, ...animals])
+    } else {
+      setAnimal([{name: nameText, species: raceText}, ...animals])
+    }
   }
 
   const debug = () => {
-    console.log(cats[0].name)
+    console.log(nameText, raceText)
   }
 
   return (
     <SafeAreaView>
-      <Button title = {text} onPress={addToList}/>
-      <Button title = 'Test' onPress={debug}/>
+      <Button title = "Press this to add your animal!" onPress={addToList}/>
+      <Button title = "debug button" onPress={debug}/>
 
       <TextInput
         style={styles.input}
         onChangeText={onNameInput}
-        placeholder = "enter cat name!! :D"
+        placeholder = "enter animal name!! :D"
       />
-      <View style={styles.kitties}>
+      <TextInput
+        style={styles.input}
+        onChangeText={onRaceInput}
+        placeholder = "enter animal species!! :D"
+      />
+
+      <View style={styles.boxes}>
         <FlatList
-          data={cats}
+          data={animals}
           renderItem={(itemData) => {
-              return <Text> {itemData.item.name} </Text>
+              return <Text style={styles.kitties}> {itemData.item.name}, {itemData.item.species} </Text>
           }}
         />
       </View>
@@ -49,9 +66,14 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   kitties: {
-    height: 40,
-    margin: 12,
-    padding: 10,
     borderWidth: 3,
+    alignItems: 'center',
+    height: 70,
+    fontSize: 50,
+    marginBottom: 20,
   },
+  boxes: {
+    padding: 50,
+    alignItems: 'center',
+  }
 });
