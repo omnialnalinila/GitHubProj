@@ -1,33 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Button, SafeAreaView, FlatList } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Button, SafeAreaView, FlatList, Pressable } from 'react-native';
 import { useState } from 'react';
 
 export default function App() {
   const [nameText, onNameInput] = useState()
-  const [raceText, onRaceInput] = useState()
+  const [speciesText, onRaceInput] = useState()
+  const [keyCount, setKeyCount] = useState(3)
 
   const [animals, setAnimal] = useState([
-    {name: 'Panko', species: 'feline'},
-    {name: 'Haru Urara', species: 'horse'}
+    {name: 'Panko', species: 'Feline', key: 1},
+    {name: 'Haru Urara', species: 'Horse', key: 2}
   ])
-
   const addToList = () => {
-    console.log(nameText, raceText)
-    if(nameText == undefined && raceText == undefined){
-      setAnimal([{name: 'Uni', species: 'Feline'}, ...animals])
-    } else if(nameText == undefined && raceText != undefined) {
-      setAnimal([{name: 'Uni', species: 'Feline'}, ...animals])
-    } else if(raceText == undefined && nameText != undefined) {
-      setAnimal([{name: 'Uni', species: 'Feline'}, ...animals])
-    } else if(nameText === null && raceText === null){
-      setAnimal([{name: 'Uni', species: 'Feline'}, ...animals])
+    debug();
+    if(nameText == undefined || speciesText == undefined){
+      setAnimal([{name: 'Uni', species: 'Feline', key: keyCount}, ...animals])
+    } else if(nameText.length == 0 || speciesText.length == 0){
+      setAnimal([{name: 'Uni', species: 'Feline', key: keyCount}, ...animals])
     } else {
-      setAnimal([{name: nameText, species: raceText}, ...animals])
+      setAnimal([{name: nameText, species: speciesText, key: keyCount}, ...animals])
     }
+    setKeyCount(keyCount+1);
   }
-
+  function removeAnimal(toRemove) {
+    console.log("This would have deleted something! :D")
+    let newAnimals = animals.filter((animal) => {
+      return animal.key !== toRemove.key
+    });
+    setAnimal(newAnimals)
+  }
   const debug = () => {
-    console.log(nameText, raceText)
+    console.log('Name: "' + nameText + '", Species: "' + speciesText + '"');
+    console.log(keyCount)
   }
 
   return (
@@ -50,7 +54,13 @@ export default function App() {
         <FlatList
           data={animals}
           renderItem={(itemData) => {
-              return <Text style={styles.kitties}> {itemData.item.name}, {itemData.item.species} </Text>
+            return (
+              <Pressable onPress={() => {
+                removeAnimal(itemData.item);
+              }}>
+                <Text style={styles.elements}> {itemData.item.name}, {itemData.item.species} </Text>
+              </Pressable>
+            )
           }}
         />
       </View>
@@ -65,7 +75,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
   },
-  kitties: {
+  elements: {
     borderWidth: 3,
     alignItems: 'center',
     height: 70,
